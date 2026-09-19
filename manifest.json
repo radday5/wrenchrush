@@ -31,14 +31,14 @@
   "screenshots": [
     {
       "src": "static/assets/banner.jpg",
-      "sizes": "1792x1024",
+      "sizes": "1376x768",
       "type": "image/jpeg",
       "form_factor": "wide",
       "label": "Wrench Rush Junkyard Pulling Action"
     },
     {
       "src": "static/assets/screenshot-mobile.jpg",
-      "sizes": "1080x1920",
+      "sizes": "768x1376",
       "type": "image/jpeg",
       "form_factor": "narrow",
       "label": "Mobile Gameplay HUD & Bolt Cracking"
