@@ -1,13 +1,19 @@
 {
   "name": "Wrench Rush: Junkyard Stripper",
   "short_name": "Wrench Rush",
+  "id": "?source=pwa",
   "description": "Crack rusty bolts, pull high-value turbos, and beat the descending overhead crusher in this fast-paced mobile salvage game!",
   "start_url": "./index.html",
+  "scope": "./",
   "display": "standalone",
-  "background_color": "#070a11",
-  "theme_color": "#070a11",
+  "display_override": ["standalone", "fullscreen", "window-controls-overlay"],
   "orientation": "portrait-primary",
+  "theme_color": "#070a11",
+  "background_color": "#070a11",
+  "lang": "en-US",
+  "dir": "ltr",
   "categories": ["games", "arcade", "simulation"],
+  "prefer_related_applications": false,
   "icons": [
     {
       "src": "static/assets/icon-192.png",
@@ -29,6 +35,41 @@
       "type": "image/jpeg",
       "form_factor": "wide",
       "label": "Wrench Rush Junkyard Pulling Action"
+    },
+    {
+      "src": "static/assets/screenshot-mobile.jpg",
+      "sizes": "1080x1920",
+      "type": "image/jpeg",
+      "form_factor": "narrow",
+      "label": "Mobile Gameplay HUD & Bolt Cracking"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Start Pulling",
+      "short_name": "Pull",
+      "description": "Jump straight into the salvage bay to pull parts",
+      "url": "./index.html",
+      "icons": [
+        {
+          "src": "static/assets/icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "Tool Shop",
+      "short_name": "Shop",
+      "description": "Upgrade your impact wrenches and power-ups",
+      "url": "./index.html#shop",
+      "icons": [
+        {
+          "src": "static/assets/icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
     }
   ]
 }

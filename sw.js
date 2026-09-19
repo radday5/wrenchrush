@@ -13,7 +13,8 @@ const ASSETS_TO_CACHE = [
   './static/js/game.js',
   './static/assets/icon-192.png',
   './static/assets/icon-512.png',
-  './static/assets/banner.jpg'
+  './static/assets/banner.jpg',
+  './static/assets/screenshot-mobile.jpg'
 ];
 
 self.addEventListener('install', (event) => {
