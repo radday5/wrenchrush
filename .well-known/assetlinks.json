@@ -1,0 +1,8 @@
+[{
+      "relation": ["delegate_permission/common.handle_all_urls"],
+      "target": {
+        "namespace": "android_app",
+        "package_name": "com.radday.wrenchrush",
+        "sha256_cert_fingerprints": ["0B:E4:09:11:67:9B:A0:10:4B:20:53:FE:A9:76:BD:A0:D9:E5:06:DD:C0:44:07:57:7E:B9:1E:ED:4D:21:4C:3D"]
+      }
+    }]

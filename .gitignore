@@ -2,3 +2,6 @@ __pycache__/
 *.pyc
 wrench_rush.db
 .venv/
+google-play-package/
+*.keystore
+signing-key-info.txt
