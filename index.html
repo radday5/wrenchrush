@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#070a11">
+  <meta name="description" content="Wrench Rush: Junkyard Stripper - High-torque bolt cracking and part pulling mobile game before the crusher drops!">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  
+  <title>Wrench Rush: Junkyard Stripper</title>
+  
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/png" href="static/assets/icon-192.png">
+  <link rel="apple-touch-icon" href="static/assets/icon-512.png">
+  <link rel="stylesheet" href="static/css/game.css">
+</head>
+<body>
+
+  <div id="gameContainer">
+    <!-- Header Bar -->
+    <header class="game-header">
+      <div class="logo-badge">
+        <span>⚡</span> WRENCH RUSH
+      </div>
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <button id="soundToggleBtn" style="background: none; border: none; font-size: 18px; cursor: pointer; color: #fff;">🔊</button>
+        <button id="openShopBtn" style="background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 4px 10px; color: #fff; font-size: 13px; font-weight: 700; cursor: pointer;">
+          🛒 SHOP
+        </button>
+        <div class="cash-pill">
+          <span>💵</span> <span class="user-cash-val">$100</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Canvas Area -->
+    <div id="canvasWrapper">
+      <canvas id="gameCanvas"></canvas>
+
+      <!-- In-Game HUD -->
+      <div id="inGameHUD" style="display: none;">
+        <div class="hud-pill">
+          <span class="hud-label">Crusher Clock</span>
+          <span class="hud-value" id="hudTimer" style="color: var(--red);">50s</span>
+        </div>
+        <div class="hud-pill" style="align-items: center;">
+          <span class="hud-label" id="hudVehicle">Civic EK Hatch</span>
+          <span class="hud-value" id="hudTool" style="font-size: 13px; color: var(--primary);">🔧 3/8" Ratchet</span>
+        </div>
+        <div class="hud-pill" style="align-items: flex-end;">
+          <span class="hud-label">Haul Cash</span>
+          <span class="hud-value" id="hudCash" style="color: var(--green);">$0</span>
+        </div>
+
+        <div class="hud-controls">
+          <div style="display: flex; gap: 8px;">
+            <button class="powerup-btn" id="btnPBBlaster" onclick="window.game.usePBBlasterPowerUp()">
+              🥫 PB Spray (2)
+            </button>
+            <button class="powerup-btn" id="btnJammer" onclick="window.game.useJammerPowerUp()">
+              🛑 Jammer (1)
+            </button>
+          </div>
+          <button class="powerup-btn" style="background: var(--green); color: #000; border: none; font-weight: 900;" onclick="window.game.checkoutRound()">
+            💰 CASH OUT
+          </button>
+        </div>
+      </div>
+
+      <!-- TITLE SCREEN -->
+      <div id="titleScreen" class="screen-overlay">
+        <img src="static/assets/banner.jpg" alt="Wrench Rush Banner" class="banner-img">
+        <h1 class="title-text">WRENCH RUSH</h1>
+        <p class="subtitle-text">
+          Grab your tools and strip high-value turbos, cats, and headers before the yard crusher drops!
+        </p>
+        <button class="btn-primary" onclick="window.game.startRound()">
+          ⚡ START PULLING NOW
+        </button>
+        <button class="btn-secondary" onclick="openShop()">
+          🛒 UPGRADE ARSENAL & TOOLS
+        </button>
+        <div style="margin-top: 18px; font-size: 12px; color: var(--text-muted);">
+          🏆 High Score Haul: <strong style="color: var(--green);" id="titleHighScore">$0</strong>
+        </div>
+      </div>
+
+      <!-- CHECKOUT RECEIPT SCREEN -->
+      <div id="checkoutScreen" class="screen-overlay" style="display: none;">
+        <div class="receipt-card">
+          <div class="receipt-header">
+            <div style="font-weight: 900; font-size: 16px; color: #fff;">U-PULL SALVAGE CASHIER</div>
+            <div style="font-size: 11px; color: var(--text-muted);">Official Parts Haul Receipt</div>
+          </div>
+          <div id="receiptItems" style="margin-bottom: 12px; max-height: 180px; overflow-y: auto;">
+            <!-- Dynamic part rows -->
+          </div>
+          <div style="display: flex; justify-content: space-between; border-top: 2px solid var(--border); padding-top: 8px; font-size: 16px; font-weight: 900;">
+            <span>ROUND EARNINGS:</span>
+            <span style="color: var(--green);" id="receiptTotal">$0</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; margin-top: 6px; font-size: 12px; color: var(--text-muted);">
+            <span>TOTAL BANK BALANCE:</span>
+            <span style="color: #fff; font-weight: 700;" id="totalBankDisplay">$0</span>
+          </div>
+        </div>
+        <button class="btn-primary" onclick="window.game.startRound()">
+          🚗 NEXT CAR IN THE BAY
+        </button>
+        <button class="btn-secondary" onclick="openShop()">
+          🛒 BUY BETTER TOOLS
+        </button>
+      </div>
+
+      <!-- CRUSHED SCREEN -->
+      <div id="crushedScreen" class="screen-overlay" style="display: none;">
+        <div style="font-size: 48px; margin-bottom: 10px;">💥🚜</div>
+        <h2 style="font-size: 24px; font-weight: 900; color: var(--red); margin-bottom: 8px;">CAR COMPACTED!</h2>
+        <p class="subtitle-text">
+          The crusher claw descended! You made it out with the parts already loaded in your wagon:
+        </p>
+        <div style="font-size: 28px; font-weight: 900; color: var(--green); margin-bottom: 20px;" id="crushHaulSaved">$0</div>
+        <button class="btn-primary" onclick="window.game.startRound()">
+          🔄 PULL ANOTHER VEHICLE
+        </button>
+        <button class="btn-secondary" onclick="openShop()">
+          🛒 UPGRADE TO FASTER TOOLS
+        </button>
+      </div>
+
+      <!-- SHOP MODAL -->
+      <div id="shopModal">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px;">
+          <div>
+            <h2 style="font-size: 20px; font-weight: 900; color: #fff;">TOOL & PERK ARSENAL</h2>
+            <div style="font-size: 12px; color: var(--text-muted);">Bank Balance: <strong class="user-cash-val" style="color: var(--green);">$100</strong></div>
+          </div>
+          <button onclick="closeShop()" style="background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; color: #fff; padding: 6px 12px; font-weight: 700; cursor: pointer;">
+            ✕ CLOSE
+          </button>
+        </div>
+
+        <h3 style="font-size: 13px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 10px; text-align: left;">Wrenching Tools</h3>
+        <div class="shop-grid" id="toolsList">
+          <!-- Populated by JS -->
+        </div>
+
+        <h3 style="font-size: 13px; text-transform: uppercase; color: var(--text-muted); margin: 16px 0 10px 0; text-align: left;">Power-Ups & Yard Perks</h3>
+        <div class="shop-grid" id="perksList">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="static/js/audio.js"></script>
+  <script src="static/js/particles.js"></script>
+  <script src="static/js/tools.js"></script>
+  <script src="static/js/upgrades.js"></script>
+  <script src="static/js/vehicles.js"></script>
+  <script src="static/js/game.js"></script>
+
+  <script>
+    // Audio toggle
+    document.getElementById('soundToggleBtn').addEventListener('click', () => {
+      const enabled = window.soundFX.toggleSound();
+      document.getElementById('soundToggleBtn').textContent = enabled ? '🔊' : '🔇';
+    });
+
+    // Shop UI handling
+    function openShop() {
+      renderShop();
+      document.getElementById('shopModal').style.display = 'flex';
+    }
+
+    function closeShop() {
+      document.getElementById('shopModal').style.display = 'none';
+      window.game.updateUI();
+    }
+
+    document.getElementById('openShopBtn').addEventListener('click', openShop);
+
+    function renderShop() {
+      const toolsContainer = document.getElementById('toolsList');
+      const curTool = window.toolManager.getCurrentTool();
+      
+      toolsContainer.innerHTML = window.toolManager.tools.map(t => {
+        const isCurrent = t.id === curTool.id;
+        return `
+          <div class="shop-card ${isCurrent ? 'active-tool' : ''}">
+            <div style="font-size: 28px;">${t.icon}</div>
+            <div style="flex: 1; text-align: left;">
+              <div style="font-weight: 800; font-size: 14px; color: #fff;">${t.name}</div>
+              <div style="font-size: 11px; color: var(--text-muted); line-height: 1.3;">${t.desc}</div>
+              <div style="font-size: 11px; color: var(--primary); margin-top: 4px;">⚡ Speed: ${t.spinDuration}s/bolt</div>
+            </div>
+            <div>
+              ${isCurrent 
+                ? '<span style="font-size: 12px; font-weight: 900; color: var(--primary);">EQUIPPED</span>'
+                : t.unlocked 
+                  ? `<button onclick="equipTool('${t.id}')" style="background: var(--bg-surface); border: 1px solid var(--border); color: #fff; padding: 6px 14px; border-radius: 8px; font-weight: 700; cursor: pointer;">EQUIP</button>`
+                  : `<button onclick="buyTool('${t.id}')" style="background: var(--green); border: none; color: #000; padding: 6px 14px; border-radius: 8px; font-weight: 900; cursor: pointer;">BUY $${t.price}</button>`
+              }
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      const perksContainer = document.getElementById('perksList');
+      perksContainer.innerHTML = window.perkManager.perks.map(p => {
+        const isOwned = p.type === 'passive' && p.owned;
+        return `
+          <div class="shop-card">
+            <div style="font-size: 28px;">${p.icon}</div>
+            <div style="flex: 1; text-align: left;">
+              <div style="font-weight: 800; font-size: 14px; color: #fff;">${p.name}</div>
+              <div style="font-size: 11px; color: var(--text-muted); line-height: 1.3;">${p.desc}</div>
+              ${p.type === 'consumable' ? `<div style="font-size: 11px; color: var(--cyan); margin-top: 4px;">Owned: <strong>${p.count}</strong></div>` : ''}
+            </div>
+            <div>
+              ${isOwned
+                ? '<span style="font-size: 12px; font-weight: 900; color: var(--green);">OWNED</span>'
+                : `<button onclick="buyPerk('${p.id}')" style="background: var(--green); border: none; color: #000; padding: 6px 14px; border-radius: 8px; font-weight: 900; cursor: pointer;">BUY $${p.price}</button>`
+              }
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function equipTool(id) {
+      window.toolManager.selectTool(id);
+      renderShop();
+      window.game.updateHUD();
+    }
+
+    function buyTool(id) {
+      const res = window.toolManager.unlockTool(id, window.game.cash);
+      if (res.success) {
+        window.game.cash -= res.cost;
+        window.game.saveGame();
+        window.soundFX.playCash();
+        renderShop();
+        window.game.updateUI();
+        window.game.updateHUD();
+      } else {
+        alert("Not enough cash in your bank! Pull more parts from cars to earn money.");
+      }
+    }
+
+    function buyPerk(id) {
+      const res = window.perkManager.buyPerk(id, window.game.cash);
+      if (res.success) {
+        window.game.cash -= res.cost;
+        window.game.saveGame();
+        window.soundFX.playCash();
+        renderShop();
+        window.game.updateUI();
+        window.game.updateHUD();
+      } else {
+        alert("Not enough cash in your bank! Pull more parts to earn money.");
+      }
+    }
+
+    // High score update
+    window.addEventListener('load', () => {
+      const hs = localStorage.getItem('wrench_rush_highscore') || '0';
+      document.getElementById('titleHighScore').textContent = `$${hs}`;
+      
+      // Register service worker if supported
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('sw.js').catch(() => {});
+      }
+    });
+  </script>
+</body>
+</html>

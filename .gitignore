@@ -1,0 +1,4 @@
+__pycache__/
+*.pyc
+wrench_rush.db
+.venv/

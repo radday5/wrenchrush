@@ -1,0 +1,11 @@
+services:
+  wrench-rush:
+    build: .
+    container_name: wrench-rush-game
+    restart: unless-stopped
+    ports:
+      - "8090:8090"
+    volumes:
+      - .:/app
+    environment:
+      - PYTHONUNBUFFERED=1
