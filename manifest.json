@@ -71,5 +71,17 @@
         }
       ]
     }
+  ],
+  "scope_extensions": [
+    {
+      "origin": "https://radday5.github.io"
+    }
+  ],
+  "related_applications": [
+    {
+      "platform": "play",
+      "url": "https://play.google.com/store/apps/details?id=com.radday.wrenchrush",
+      "id": "com.radday.wrenchrush"
+    }
   ]
 }
